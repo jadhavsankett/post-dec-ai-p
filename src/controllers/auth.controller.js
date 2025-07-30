@@ -2,6 +2,7 @@
 require('dotenv').config()
 const usermodel = require('../models/user.model')
 const jwt = require('jsonwebtoken')
+const bcryptjs = require('bcryptjs')
 
 async function registerController(req , res) {
     const {username , password} = req.body;
@@ -17,9 +18,9 @@ async function registerController(req , res) {
     }
 
     const user = await usermodel.create({
-        username,password
+        username,
+        password:await bcryptjs.hash(password,10) //this line denoted the bcrypt the password like this formate  (kshdhsdhfhsdfsd)
     })
-
 
     const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
 
@@ -43,7 +44,7 @@ async function loginController(req , res) {
         })
     }
 
-    const ispasswordvalid = user.password === password
+    const ispasswordvalid = await bcryptjs.compare(password , user.password)  //compare
 
     if(!ispasswordvalid){
         return res.status(400).json({

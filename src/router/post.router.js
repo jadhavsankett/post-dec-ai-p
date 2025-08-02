@@ -1,15 +1,15 @@
 const express = require('express')
-const authmiddleware = require('../middlewares/auth.middlewares')
+const authMiddleware = require('../middlewares/auth.middlewares')
 const router = express.Router()
+const { createPostController } = require('../controllers/post.controller')
 const multer = require('multer')
-const createPostController = require('../controllers/post.controller')
 
 
 const upload = multer({storage:multer.memoryStorage()})
 
 // api/post => protected api => fully protected post like user login nahi kar oo post nahi create kar sakta
 router.post('/',
-    authmiddleware,
+    authMiddleware,
     upload.single('image'),
     createPostController
 )
